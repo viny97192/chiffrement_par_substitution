@@ -4,6 +4,10 @@ import java.util.*;
 
 public class Decrypt {
 
+	static Decalage d = new Decalage();
+	static Permutation p = new Permutation();
+	static Vigenere v = new Vigenere();
+
 	public static void main(String[] args) {
 
 		if (args.length < 2) {
@@ -17,12 +21,13 @@ public class Decrypt {
 		if (args.length > 2)
 			strat = args[2];
 
-		Decalage d = new Decalage();
-		Permutation p = new Permutation();
-		Vigenere v = new Vigenere();
-		Dechiffre de = new Dechiffre();
 
 		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+
+		if(args[0].charAt(0) == 'v'){
+			int key_length = Integer.parseInt(args[2]);
+			String[] t = substring(file,key_length);	
+		}
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(new File(file)));
@@ -35,17 +40,7 @@ public class Decrypt {
 					if (strat.charAt(0) == '1') {
 
 					} else if (strat.charAt(0) == '2') {
-						for (int i = 0; i < line.length(); i++) {
-							char c = line.charAt(i);
-							if (c >= 97 && c <= 122) {
-								Integer val = map.get(new Character(c));
-								if (val != null) {
-									map.put(c, new Integer(val + 1));
-								} else {
-									map.put(c, 1);
-								}
-							}
-						}
+						character_frequency(map,line);
 
 					} else if (strat.charAt(0) == '3') {
 
@@ -55,7 +50,7 @@ public class Decrypt {
 				} else if (cipher.charAt(0) == 'p') {
 
 				} else if (cipher.charAt(0) == 'v') {
-
+					
 				} else {
 					System.out.println("Méthode de chiffrement invalide");
 				}
@@ -66,35 +61,39 @@ public class Decrypt {
 			e.printStackTrace();
 		}
 
-		
 		if (strat.charAt(0) == '2') {
-			//System.out.println(map.toString());
-			char charMaxFreq = Collections.max(map.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
-			//System.out.println(charMaxFreq);
-			charMaxFreq -= 97;
-			if(charMaxFreq >= 5){
-				System.out.println(d.dechiffrer(texteComplet, charMaxFreq - 4));
-			} else {
-				int i = charMaxFreq;
-				System.out.println(i);
-				System.out.println(d.dechiffrer(texteComplet, charMaxFreq + 22));
-			}
+			print_cipher(map,texteComplet);
 		}
 
 	}
 
-	public static String stripAccents(String s) {
-		s = Normalizer.normalize(s, Normalizer.Form.NFD);
-		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-		return s;
+	public static void character_frequency(HashMap<Character, Integer> map, String line){
+		for (int i = 0; i < line.length(); i++) {
+			char c = line.charAt(i);
+			if (c >= 97 && c <= 122) {
+				Integer val = map.get(new Character(c));
+				if (val != null) {
+					map.put(c, new Integer(val + 1));
+				} else {
+					map.put(c, 1);
+				}
+			}
+		}
 	}
 
-	public static String format(String s) {
-		// s = stripAccents(s.toLowerCase());
-		return stripAccents(s).toLowerCase();
+	public static void print_cipher(HashMap<Character, Integer> map, String texteComplet){	
+		//System.out.println(map.toString());
+		char charMaxFreq = Collections.max(map.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
+		//System.out.println(charMaxFreq);
+		charMaxFreq -= 97;
+		if(charMaxFreq >= 5){
+			System.out.println(d.dechiffrer(texteComplet, charMaxFreq - 4));
+		} else {
+			System.out.println(d.dechiffrer(texteComplet, charMaxFreq + 22));
+		}
 	}
 
-	public String[] substring(String file, int key_length){
+	public static String[] substring(String file, int key_length){
 
 		String[] t = new String[key_length] ;
 		String line;
@@ -127,30 +126,15 @@ public class Decrypt {
 		return t;
 	}
 
-	public int[] statistic_analysis(String s){
-		int[] lettres = new int[26];
-
-		for(int i=0;i<s.length();i++){
-			if(s.charAt(i) >= 97 && s.charAt(i) <= 122)
-				lettres[s.charAt(i)-97]++;
-		}
-
-		return lettres;
+	public static String stripAccents(String s) {
+		s = Normalizer.normalize(s, Normalizer.Form.NFD);
+		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		return s;
 	}
 
-	public char get_max(int[] t){
-		int max = t[0], c = 0;
-
-		for(int i=1;i<t.length;i++){
-			if(max < t[i]){
-				max = t[i];
-				c = i;
-			}
-		}
-
-		System.out.println("c = "+c);
-		System.out.println("(char) c = "+ (char) (c+97));
-		return (char) (c+97);
+	public static String format(String s) {
+		// s = stripAccents(s.toLowerCase());
+		return stripAccents(s).toLowerCase();
 	}
 
 }

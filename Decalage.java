@@ -3,14 +3,7 @@ import java.io.*;
 public class Decalage {
 	
 	public char chiffrer(char c, int key){
-		char c2 = 'a';
-		if(c >= 97 && c <= 122)
-			c2 = (char)((((((int)c-97)+key)%26)+97));	
-
-		else 
-			c2 = c;
-	
-		return c2;
+		return (char)((((c-97)+key)%26)+97);	
 	}
 
 	public char dechiffrer(char c, int key){
