@@ -93,4 +93,64 @@ public class Decrypt {
 		// s = stripAccents(s.toLowerCase());
 		return stripAccents(s).toLowerCase();
 	}
+
+	public String[] substring(String file, int key_length){
+
+		String[] t = new String[key_length] ;
+		String line;
+		int i = 0;
+		BufferedReader br;
+
+		for(int k=0;k<key_length;k++)
+			t[k] = "";
+
+		try{
+			br = new BufferedReader(new FileReader(new File(file)));	
+
+			while((line = br.readLine()) != null){
+				line = format(line);
+
+				for(int j=0;j<line.length();j++){
+					if(i == key_length)
+						i = 0;
+					t[i] += line.charAt(j);
+					if(line.charAt(j) >= 97 && line.charAt(j) <= 122)
+						i++;
+				}
+			}
+		}
+
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
+		return t;
+	}
+
+	public int[] statistic_analysis(String s){
+		int[] lettres = new int[26];
+
+		for(int i=0;i<s.length();i++){
+			if(s.charAt(i) >= 97 && s.charAt(i) <= 122)
+				lettres[s.charAt(i)-97]++;
+		}
+
+		return lettres;
+	}
+
+	public char get_max(int[] t){
+		int max = t[0], c = 0;
+
+		for(int i=1;i<t.length;i++){
+			if(max < t[i]){
+				max = t[i];
+				c = i;
+			}
+		}
+
+		System.out.println("c = "+c);
+		System.out.println("(char) c = "+ (char) (c+97));
+		return (char) (c+97);
+	}
+
 }
