@@ -26,31 +26,41 @@ public class Decrypt {
 		if (cipher.charAt(0) == 'v') {
 			int key_length = Integer.parseInt(args[2]);
 			String[] substrings = substring(file, key_length);
-			String key = "";
-			char[] max_frequency = new char[substrings.length-1];
 
-			for(int i=0;i<substrings.length-1;i++){
+
+			for(int i=0;i<substrings.length-1;i++)
+				System.out.println(d.dechiffrer(substrings[i],i)+"\n");
+
+			/*
+			String key = "";
+			char[] max_frequency = new char[key_length];
+
+			for(int i=0;i<key_length;i++){
 				/*
-				System.out.println("substrings["+i+"] = "+substrings[i]+"\n");
+				System.out.println("substrings["+i+"] = "+substrings[i]);
 				System.out.println("substrings["+i+"].length() = "+substrings[i].length()+"\n");
-				*/
 
 				character_frequency(map,substrings[i]);
-				max_frequency[i] = get_max_frequency_character(map);
-				System.out.println("caractère de fréquence max : "+max_frequency[i]);
-				System.out.println("e-"+max_frequency[i]+" = "+Math.abs('e'-max_frequency[i]));
-				/*
 				System.out.println(map.toString()+"\n");
-				*/
+				max_frequency[key_length-i-1] = get_max_frequency_character(map);
+				map.clear();
+				System.out.println("caractère de fréquence max : "+max_frequency[i]+"\n");
+				System.out.println("substrings["+i+"] = "+substrings[i]);
+				System.out.println("substrings["+i+"].length() = "+substrings[i].length()+"\n");
+				/*
+				System.out.println("e-"+max_frequency[i]+" = "+Math.abs('e'-max_frequency[i]));
+				System.out.println(map.toString()+"\n");
 			}
 
-			System.out.println("key = "+key);
 
-			for(int i=0,l = max_frequency.length;i<l;i++)
-				key += (char) (Math.abs('e'-max_frequency[i])+97);
+			for(int i=0;i<max_frequency.length;i++)
+				System.out.println("max_frequency["+i+"] = "+max_frequency[i]);
+				//key += (char) (Math.abs('e'-max_frequency[i])+97);
 
+			/*
 			System.out.println("key = "+key);
 			System.out.println(v.dechiffrer(substrings[key_length],key));
+			*/
 		}
 
 		else{
@@ -68,11 +78,15 @@ public class Decrypt {
 							character_frequency(map, line);
 
 						} else if (strat.charAt(0) == '3') {
+							if (args[3] == null)
+								return;
 
 						} else {
 							continue;
 						}
 					} else if (cipher.charAt(0) == 'p') {
+
+					} else if (cipher.charAt(0) == 'v') {
 
 					} else {
 						System.out.println("Méthode de chiffrement invalide");
@@ -85,25 +99,22 @@ public class Decrypt {
 			}
 		}
 
-		/*
-		if (strat.charAt(0) == '2') {
+		int nbMots = countWords(texteComplet);
+
+		if (cipher.charAt(0) == 'c' && strat.charAt(0) == '2') {
 			print_cipher(map, texteComplet);
-		} else if (strat.charAt(0) == '3') {
-			boolean word = false;
+		} else if (cipher.charAt(0) == 'c' && strat.charAt(0) == '3') {
 			int decal = 1, cpt = 0;
-			int nbMots = countWords(texteComplet);
 			String[] splited = texteComplet.split("\\W+");
 			while (decal < 26) {
 				for (int i = 0; i < splited.length; i++) {
 					try {
 						BufferedReader br = new BufferedReader(new FileReader(new File("liste_francais.txt")));
-						word = false;
 						while ((line = br.readLine()) != null) {
 							line = format(line);
 							String essai = d.dechiffrer(splited[i], decal);
 							if (line.equals(essai)) {
 								cpt++;
-								word = true;
 								break;
 							}
 						}
@@ -120,8 +131,53 @@ public class Decrypt {
 			}
 			System.out.println("decal = " + decal);
 			// System.out.println(nbMots + " " + cpt);
+		} else if (cipher.charAt(0) == 'c' && strat.charAt(0) == '1') {
+			String motClair = args[3];
+			ArrayList<String> tabMotsMemeLong = new ArrayList<String>();
+			int longueur = motClair.length(), i = 0, decalage = 0;
+			String[] splited = texteComplet.split("\\W+");
+			for (int n = 0; n < splited.length; n++) {
+				int l = splited[n].length();
+				if (l == longueur) {
+					tabMotsMemeLong.add(splited[n]);
+				}
+			}
+			// MAINTENANT IL FAUT ESSAYER LES DECALAGES CORRESPONDANTS AUX MOTS
+			// TROUVES SUR LE TEXTE CRYPTE JUSQU'A AVOIR LE BON
+			for (int k = 0; k < tabMotsMemeLong.size(); k++) {
+				int ascii1 = motClair.charAt(0);
+				int ascii2 = tabMotsMemeLong.get(k).charAt(0);
+				int cpt = 0;
+				if (ascii1 < ascii2) {
+					decalage = ascii2 - ascii1;
+				} else {
+					decalage = ascii2 - ascii1 + 26;
+				}
+				if(decalage == 26)
+					decalage = 0;
+				System.out.println(decalage);
+				for (int m = 0; m < splited.length; m++) {
+					try {
+						BufferedReader br = new BufferedReader(new FileReader(new File("liste_francais.txt")));
+						while ((line = br.readLine()) != null) {
+							line = format(line);
+							String essai = d.dechiffrer(splited[m], decalage);
+							if (line.equals(essai)) {
+								cpt++;
+								break;
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					if (cpt > nbMots / 2) {
+						System.out.println(d.dechiffrer(texteComplet, decalage));
+						return;
+					}
+				}
+			}
 		}
-	*/
+
 	}
 
 	public static void character_frequency(HashMap<Character, Integer> map, String line) {
@@ -163,7 +219,7 @@ public class Decrypt {
 		int i = 0;
 		BufferedReader br;
 
-		for (int k = 0; k < key_length+1; k++)
+		for (int k = 0; k < t.length; k++)
 			t[k] = "";
 
 		try {
@@ -172,7 +228,7 @@ public class Decrypt {
 			while ((line = br.readLine()) != null) {
 				line = format(line);
 
-				t[key_length] += line+"\n";
+				t[key_length] += line;
 
 				for (int j = 0; j < line.length(); j++) {
 					if (i == key_length)
@@ -223,4 +279,25 @@ public class Decrypt {
 		return wordCount;
 	}
 
+	public int[] statistic_analysis(String s){
+		int[] t = new int[26];
+
+		for(int i=0;i<s.length();i++)
+			t[s.charAt(i)-97]++;
+		
+		return t;
+	}
+
+	public char get_max(int[] t){
+		int max = t[0], index = 0;
+
+		for(int i=1;i<t.length;i++){
+			if(max < t[i]){
+				max = t[i];
+				index = i;
+			}
+		}
+
+		return (char) (i+97);
+	}
 }
