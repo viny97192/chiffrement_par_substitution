@@ -318,7 +318,11 @@ public class Decrypt {
 	public static String generate_key(HashMap<Character,Integer> map){
 		List keys = new ArrayList(map.keySet());
 		String key = "";
+		int[] indexes = {24,10,14,15,25,7,11,8,23,3,2,17,13,21,18,12,6,20,22,19,16,9,1,4,5,0};
 
+		for(int i=0;i<indexes.length;i++)
+			key += keys.get(indexes[i]);
+		/*
 		key += keys.get(24);
 		key += keys.get(10);
 		key += keys.get(14);
@@ -345,6 +349,7 @@ public class Decrypt {
 		key += keys.get(4);
 		key += keys.get(5);
 		key += keys.get(0);
+		*/
 
 		return key;
 	}
