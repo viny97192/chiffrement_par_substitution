@@ -7,6 +7,7 @@ public class Decrypt {
 	static Decalage d = new Decalage();
 	static Permutation p = new Permutation();
 	static Vigenere v = new Vigenere();
+	//static char[] frequencies = ['z','w','k','j','x','y','q','f','h','v','b','g','p','m','c','d','u','l','o','t','r','n','s','i','a','e',];
 
 	public static void main(String[] args) {
 
@@ -21,46 +22,31 @@ public class Decrypt {
 		if (args.length > 2)
 			strat = args[2];
 
-		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+		HashMap<Character, Integer> map = initMap();
 
 		if (cipher.charAt(0) == 'v') {
 			int key_length = Integer.parseInt(args[2]);
 			String[] substrings = substring(file, key_length);
 
 
+			/*
 			for(int i=0;i<substrings.length-1;i++)
 				System.out.println(d.dechiffrer(substrings[i],i)+"\n");
+			*/
 
-			/*
 			String key = "";
 			char[] max_frequency = new char[key_length];
 
 			for(int i=0;i<key_length;i++){
-				/*
-				System.out.println("substrings["+i+"] = "+substrings[i]);
-				System.out.println("substrings["+i+"].length() = "+substrings[i].length()+"\n");
-
 				character_frequency(map,substrings[i]);
-				System.out.println(map.toString()+"\n");
 				max_frequency[key_length-i-1] = get_max_frequency_character(map);
 				map.clear();
-				System.out.println("caractère de fréquence max : "+max_frequency[i]+"\n");
-				System.out.println("substrings["+i+"] = "+substrings[i]);
-				System.out.println("substrings["+i+"].length() = "+substrings[i].length()+"\n");
-				/*
-				System.out.println("e-"+max_frequency[i]+" = "+Math.abs('e'-max_frequency[i]));
-				System.out.println(map.toString()+"\n");
 			}
 
 
 			for(int i=0;i<max_frequency.length;i++)
-				System.out.println("max_frequency["+i+"] = "+max_frequency[i]);
-				//key += (char) (Math.abs('e'-max_frequency[i])+97);
-
-			/*
-			System.out.println("key = "+key);
-			System.out.println(v.dechiffrer(substrings[key_length],key));
-			*/
+				//System.out.println("max_frequency["+i+"] = "+max_frequency[i]);
+				key += (char) (Math.abs('e'-max_frequency[i])+97);
 		}
 
 		else{
@@ -84,13 +70,25 @@ public class Decrypt {
 						} else {
 							continue;
 						}
-					} else if (cipher.charAt(0) == 'p') {
+					} 
 
-					} else if (cipher.charAt(0) == 'v') {
-
-					} else {
+					/*
+					 else if{
 						System.out.println("Méthode de chiffrement invalide");
 					}
+					*/
+				}
+
+				if(cipher.charAt(0) == 'p'){
+					String key;
+					character_frequency(map,texteComplet);				
+					System.out.println(map.size());
+					map = sortByValue(map);
+					System.out.println(map.toString());
+					key = generate_key(map);
+					System.out.println(key);
+
+					System.out.println(p.dechiffrer(texteComplet,key));
 				}
 			}
 
@@ -180,16 +178,13 @@ public class Decrypt {
 
 	}
 
+
 	public static void character_frequency(HashMap<Character, Integer> map, String line) {
 		for (int i = 0; i < line.length(); i++) {
 			char c = line.charAt(i);
 			if (c >= 97 && c <= 122) {
 				Integer val = map.get(new Character(c));
-				if (val != null) {
-					map.put(c, new Integer(val + 1));
-				} else {
-					map.put(c, 1);
-				}
+				map.put(c, new Integer(val + 1));
 			}
 		}
 	}
@@ -279,6 +274,81 @@ public class Decrypt {
 		return wordCount;
 	}
 
+	public static HashMap<Character, Integer> initMap() {
+		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+		char c = 'a';
+
+		while(c <= 122){
+			map.put(c,0);
+			c++;
+		}
+
+		return map;
+	}
+
+	public static HashMap<Character, Integer> sortByValue(HashMap<Character, Integer> unsortHashMap) {
+
+		List<HashMap.Entry<Character, Integer>> list =
+			new LinkedList<HashMap.Entry<Character, Integer>>(unsortHashMap.entrySet());
+
+		Collections.sort(list, new Comparator<HashMap.Entry<Character, Integer>>() {
+		    public int compare(HashMap.Entry<Character, Integer> o1,
+				       HashMap.Entry<Character, Integer> o2) {
+			return (o1.getValue()).compareTo(o2.getValue());
+		    }
+		});
+
+		HashMap<Character, Integer> sortedMap = new LinkedHashMap<Character, Integer>();
+		for (HashMap.Entry<Character, Integer> entry : list) {
+		    sortedMap.put(entry.getKey(), entry.getValue());
+		}
+
+		/*
+		//classic iterator example
+		for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
+		    Map.Entry<String, Integer> entry = it.next();
+		    sortedMap.put(entry.getKey(), entry.getValue());
+		}*/
+
+
+		return sortedMap;
+		
+	}
+
+	public static String generate_key(HashMap<Character,Integer> map){
+		List keys = new ArrayList(map.keySet());
+		String key = "";
+
+		key += keys.get(24);
+		key += keys.get(10);
+		key += keys.get(14);
+		key += keys.get(15);
+		key += keys.get(25);
+		key += keys.get(7);
+		key += keys.get(11);
+		key += keys.get(8);
+		key += keys.get(23);
+		key += keys.get(3);
+		key += keys.get(2);
+		key += keys.get(17);
+		key += keys.get(13);
+		key += keys.get(21);
+		key += keys.get(18);
+		key += keys.get(12);
+		key += keys.get(6);
+		key += keys.get(20);
+		key += keys.get(22);
+		key += keys.get(19);
+		key += keys.get(16);
+		key += keys.get(9);
+		key += keys.get(1);
+		key += keys.get(4);
+		key += keys.get(5);
+		key += keys.get(0);
+
+		return key;
+	}
+
 	public int[] statistic_analysis(String s){
 		int[] t = new int[26];
 
@@ -298,6 +368,6 @@ public class Decrypt {
 			}
 		}
 
-		return (char) (i+97);
+		return (char) (index+97);
 	}
 }
