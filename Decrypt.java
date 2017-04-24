@@ -23,43 +23,69 @@ public class Decrypt {
 
 		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
 
-		if (args[0].charAt(0) == 'v') {
+		if (cipher.charAt(0) == 'v') {
 			int key_length = Integer.parseInt(args[2]);
-			String[] t = substring(file, key_length);
+			String[] substrings = substring(file, key_length);
+			String key = "";
+			char[] max_frequency = new char[substrings.length-1];
+
+			for(int i=0;i<substrings.length-1;i++){
+				/*
+				System.out.println("substrings["+i+"] = "+substrings[i]+"\n");
+				System.out.println("substrings["+i+"].length() = "+substrings[i].length()+"\n");
+				*/
+
+				character_frequency(map,substrings[i]);
+				max_frequency[i] = get_max_frequency_character(map);
+				System.out.println("caractère de fréquence max : "+max_frequency[i]);
+				System.out.println("e-"+max_frequency[i]+" = "+Math.abs('e'-max_frequency[i]));
+				/*
+				System.out.println(map.toString()+"\n");
+				*/
+			}
+
+			System.out.println("key = "+key);
+
+			for(int i=0,l = max_frequency.length;i<l;i++)
+				key += (char) (Math.abs('e'-max_frequency[i])+97);
+
+			System.out.println("key = "+key);
+			System.out.println(v.dechiffrer(substrings[key_length],key));
 		}
 
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(new File(file)));
+		else{
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(new File(file)));
 
-			while ((line = br.readLine()) != null) {
+				while ((line = br.readLine()) != null) {
 
-				line = format(line);
-				texteComplet += line + "\n";
-				if (cipher.charAt(0) == 'c') {
-					if (strat.charAt(0) == '1') {
+					line = format(line);
+					texteComplet += line + "\n";
+					if (cipher.charAt(0) == 'c') {
+						if (strat.charAt(0) == '1') {
 
-					} else if (strat.charAt(0) == '2') {
-						character_frequency(map, line);
+						} else if (strat.charAt(0) == '2') {
+							character_frequency(map, line);
 
-					} else if (strat.charAt(0) == '3') {
+						} else if (strat.charAt(0) == '3') {
+
+						} else {
+							continue;
+						}
+					} else if (cipher.charAt(0) == 'p') {
 
 					} else {
-						continue;
+						System.out.println("Méthode de chiffrement invalide");
 					}
-				} else if (cipher.charAt(0) == 'p') {
-
-				} else if (cipher.charAt(0) == 'v') {
-
-				} else {
-					System.out.println("Méthode de chiffrement invalide");
 				}
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		/*
 		if (strat.charAt(0) == '2') {
 			print_cipher(map, texteComplet);
 		} else if (strat.charAt(0) == '3') {
@@ -95,7 +121,7 @@ public class Decrypt {
 			System.out.println("decal = " + decal);
 			// System.out.println(nbMots + " " + cpt);
 		}
-
+	*/
 	}
 
 	public static void character_frequency(HashMap<Character, Integer> map, String line) {
@@ -132,12 +158,12 @@ public class Decrypt {
 
 	public static String[] substring(String file, int key_length) {
 
-		String[] t = new String[key_length];
+		String[] t = new String[key_length+1];
 		String line;
 		int i = 0;
 		BufferedReader br;
 
-		for (int k = 0; k < key_length; k++)
+		for (int k = 0; k < key_length+1; k++)
 			t[k] = "";
 
 		try {
@@ -146,12 +172,15 @@ public class Decrypt {
 			while ((line = br.readLine()) != null) {
 				line = format(line);
 
+				t[key_length] += line+"\n";
+
 				for (int j = 0; j < line.length(); j++) {
 					if (i == key_length)
 						i = 0;
-					t[i] += line.charAt(j);
-					if (line.charAt(j) >= 97 && line.charAt(j) <= 122)
+					if (line.charAt(j) >= 97 && line.charAt(j) <= 122){
+						t[i] += line.charAt(j);
 						i++;
+					}
 				}
 			}
 		}
