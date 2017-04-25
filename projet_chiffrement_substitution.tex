@@ -142,6 +142,15 @@ Ces applications ouvrent en lecture le fichier passé en argument. Puis elles ap
 \subsubsection{Chiffrement de César}
 \vspace{1\baselineskip}
 
+César est la méthode de chiffrement la plus simple. \\
+On dispose de 3 stratégies comme définies dans le sujet : \\
+\begin{enumerate}
+\item La première basée sur la connaissance d'un mot fourni à l'algorithme. On regarde dans le texte les mots de même longueur, on compare leur première lettre qui nous donne un décalage qu'on essaie. Si ça ne marche pas on passe au mot crypté suivant.
+\item La deuxième basée sur la fréquence des lettres. On calcule la fréquence des lettres, le plus fréquente représente le "e" (simplifié pour les besoin du projet, on ne considère pas les autres lettres fréquentes), on calcule le décalage et on trouve le texte décrypté.
+\item La troisième en "brute force", on essaie les décalages un par un jusqu'à trouver le bon. Cette méthode est théoriquement la plus lente, puisqu'on lit le dictionnaire entier à chaque fois pour comparer le mot actuel.
+\end{enumerate}
+\vspace{2\baselineskip}
+
 \vspace{2\baselineskip}
 
 \subsubsection{Chiffrement de Vigenère}
