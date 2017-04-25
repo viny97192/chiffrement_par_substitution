@@ -1,0 +1,173 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\pagestyle{fancy}
+
+
+\renewcommand{\headrulewidth}{0.1pt}
+\fancyhead[L]{Université Paris 7 - Denis Diderot \\ Année universitaire 2016-2017 \\}
+\fancyhead[R]{Bastien Masson Vincent Taco \\ L3 - SI6 \\}
+
+\begin{document}
+
+\textbf{PROJET DE CHIFFREMENT PAR SUBSTITUTION}
+
+\flushleft
+\color{black}
+
+\color{cyan}\section{Éxécution des applications}
+\color{black}
+\vspace{1\baselineskip}
+
+\subsection{Chiffre.java}
+\vspace{1\baselineskip}
+
+\begin{enumerate}
+\item compiler avec la commande \texttt{javac Chiffre.java}
+\item exécuter avec la commande \texttt{java Chiffre type\_chiffrage clé\_chiffrage nom\_fichier}
+\end{enumerate}
+\vspace{1\baselineskip}
+
+\texttt{type\_chiffrage} correspond à la méthode de chiffrage à utiliser pour chiffrer le texte indiqué. \\
+Entrez la lettre \texttt{c} pour le chiffrement de César, la lettre \texttt{v} pour le chiffrement de Vigenère et la lettre \texttt{p} pour le chiffrement par permutation. \\
+\vspace{1\baselineskip}
+
+\texttt{clé\_chiffrage} correspond à la clé utilisée pour chiffrer le texte indiqué. \\
+Entrez la valeur du décalage pour chiffrement de César, le mot clé pour le chiffrement de Vigenère et la permutation pour le chiffrement par permutation. \\
+\vspace{2\baselineskip}
+
+\subsection{Dechiffre.java}
+\vspace{1\baselineskip}
+
+\begin{enumerate}
+\item compiler avec la commande \texttt{javac Dechiffre.java}
+\item exécuter avec la commande \texttt{java Dechiffre type\_chiffrage clé\_chiffrage nom\_fichier}
+\end{enumerate}
+\vspace{1\baselineskip}
+
+L'ordre et le type des argument sont les même que pour l'application \texttt{Chiffre.java}. \\
+\vspace{2\baselineskip}
+
+\subsection{Decrypt.java}
+\vspace{1\baselineskip}
+
+\begin{enumerate}
+\item compiler avec la commande \texttt{javac Decrypt.java}
+\item exécuter avec la commande \texttt{java Decrypt type\_chiffrage nom\_fichier [(stratégie ou taille\_mot\_clé) [mot\_texte\_clair]]}
+\end{enumerate}
+\vspace{1\baselineskip}
+
+Les caractères utilisés pour les types de chiffrages sont le même que que pour les applications \texttt{Chiffre.java} et \texttt{Dechiffre.java} \\
+\vspace{1\baselineskip}
+
+\texttt{stratégie} correspond aux 3 stratégies (a), (b) et (c) décrites dans l'énnoncé du projet.
+\vspace{1\baselineskip}
+
+\texttt{taille\_mot\_clé} correspond à la taille de la clé utilisée pour le chiffrement de Vigenère. \\
+\vspace{1\baselineskip}
+
+\texttt{mot\_text\_clair} : correspond au mot connu qui se trouve dans le texte clair. \\
+\vspace{2\baselineskip}
+
+\color{cyan}\section{Choix d'algorithmes}
+\color{black}
+\vspace{1\baselineskip}
+
+Chacune des classes \texttt{Decalage, Vigenere, Permutation} comportent 4 méthodes : \\
+\texttt{public char chiffrer(char c, int key)} \\
+\texttt{public char dechiffrer(char c, int key)} \\
+\texttt{public String chiffrer(String s, int key)} \\
+\texttt{public String dechiffrer(String s, int key)} \\
+\vspace{1\baselineskip}
+
+\subsection{Decalage.java}
+\vspace{1\baselineskip}
+
+Dans la méthode \texttt{public char chiffrer(char c, int key)} on utilise la clé \textt{key} pour décaler le caractère. \\
+On commence par retrancher 97 (qui correspond au code ASCII de la lettre minuscule \textit{a}). \\
+Ensuiste on ajoute la valeur du décalage, puis on calcule le modulo 26 du nombre obtenu. \\
+On finit par ajouter 97 pour obtenir le caractère chiffré. \\
+\vspace{1\baselineskip}
+
+Dans la méthode \texttt{public String chiffrer(String s, int key)}, on applique la méthode précédente à tous les caractères de la chaîne passée en argument. \\
+On renvoie la chaîne chiffrée obtenue. \\
+\vspace{1\baselineskip}
+
+Le principe des méthodes de déchiffrement est similaire. \\
+On la différence est qu'on utilise la soustraction modulo 26 pour retrouver le caractère d'origine. \\
+\vspace{2\baselineskip}
+
+\subsection{Vigenere.java}
+\vspace{1\baselineskip}
+
+Les méthodes \texttt{chiffrer(char c, char key)} et \texttt{dechiffer(char c, char key)} se comportent de la même manière que les méthodes du même nom de la classe Decalage. \\
+La différence est que la clé utilisée pour le chiffrement/déchiffrement est un caractère. \\
+\vspace{1\baselineskip}
+
+La méthode \texttt{public String chiffrer(String s, String key)} applique la méthode \texttt{char chiffrer(char c, char key)} à chacun des caractères de la chaînes passée en argument. \\
+Les décalages induits par les caractères du mot-clé sont utilisés cycliquement sur tous les caractères de la chaînes. \\
+\vspace{1\baselineskip}
+
+Le principe utilisé est le même pour le déchiffrage. \\
+\vspace{2\baselineskip}
+
+\subsection{Permutation.java}
+\vspace{1\baselineskip}
+
+Dans la méthode \texttt{char chiffrer(char c, String key)} on renvoie le caractère qui se trouve à l'indice (code ASCII du caractère passé en argumen - 97) de la chaîne passé en argument. \\
+Cette chaînes de caractère représente la permutation utilisée pour chiffrer les textes clairs. \\
+\vspace{1\baselineskip}
+
+Dans la méthode \texttt{char dechiffrer(char c, String key)} on renvoie le caractère obtenu en ajoutant 97 à l'indice auquel se trouve le caractère \texttt{c} dans la chaîne \textt{key}. \\
+\vspace{1\baselineskip}
+
+Les méthodes \texttt{String chiffrer/dechiffrer(String s, String key)} applique les 2 méthodes précédentes à chaque caractères de la chaîne \texttt{s} passée en argument. \\
+\vspace{2\baselineskip}
+
+\subsection{Chiffre.java, Dechiffre.java}
+\vspace{1\baselineskip}
+
+Ces applications ouvrent en lecture le fichier passé en argument. Puis elles appellent les fonctions décrites ci-dessus à chaque lignes de ce fichier afin de chiffer/déchiffrer entièrement. \\
+\vspace{2\baselineskip}
+
+\subsection{Decrypt.java}
+\vspace{1\baselineskip}
+
+\subsection{Chiffrement de César}
+\vspace{1\baselineskip}
+
+\vspace{2\baselineskip}
+
+\subsection{Chiffrement de Vigenère}
+\vspace{1\baselineskip}
+
+Dans cette partie, on suppose la longueur $n$ du mot-clé utilisé pour le chiffrement connue. \\
+Les étapes de l'algorithme de décryptage du chiffrement de Vigenère sont : \\
+\begin{enumerate}
+\item Subdivision du texte chiffré en $n$ sous-chaînes. \\
+La première sous-chaîne est composé des caractères d'indice $0, 0+n, 0+2n, ...$ du texte chiffré, la deuxième sous-chaîne est composé des caractères d'indice $1, 1+n, 1+2n, ...$ du texte chiffré, ... \\
+Toutes les sous-chaînes sont stockées dans un tableau. \\
+\item Pour chaque sous-chaîne $k$ on effectue une analyse statistique de ses caractères.
+\item À partir de cette analyse statistique on déduit le décalage utilisé pour chiffrer les caractères de cette sous-chaîne.
+\item De ce décalage on déduit le caractère d'indice $k-1$ du mot-clé
+\item À partir de ces caractères on reconstitue le mot- clé utilisé pour chiffrer le texte clair
+\end{enumerate}
+\vspace{2\baselineskip}
+
+\subsection{Chiffrement par permutation}
+\vspace{1\baselineskip}
+
+On effectue une analyse statistique des caractères du texte chiffré. \\
+On compare les fréquences de chaque caractères du texte chiffré, aux fréquences des lettres de la langue française. \\
+On associe les fréquences des les plus élevées des caractères du texte chiffré, aux fréquences les plus élevées des lettres de la langue Française. Idem pour les fréquences les plus basses. \\
+De ces association on déduit la permutation utilisée pour chiffrer le texte clair. \\
+Cette méthode ne permet qu'un decryptage partiel du texte chiffré. \\
+\vspace{2\baselineskip}
+
+\end{document}

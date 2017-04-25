@@ -7,7 +7,6 @@ public class Decrypt {
 	static Decalage d = new Decalage();
 	static Permutation p = new Permutation();
 	static Vigenere v = new Vigenere();
-	//static char[] frequencies = ['z','w','k','j','x','y','q','f','h','v','b','g','p','m','c','d','u','l','o','t','r','n','s','i','a','e',];
 
 	public static void main(String[] args) {
 
@@ -25,28 +24,50 @@ public class Decrypt {
 		HashMap<Character, Integer> map = initMap();
 
 		if (cipher.charAt(0) == 'v') {
-			int key_length = Integer.parseInt(args[2]);
+			int key_length = Integer.parseInt(args[2]), decalage;
 			String[] substrings = substring(file, key_length);
-
+			String key = "";
+			char[] max_frequency = new char[key_length];
 
 			/*
 			for(int i=0;i<substrings.length-1;i++)
 				System.out.println(d.dechiffrer(substrings[i],i)+"\n");
 			*/
 
-			String key = "";
-			char[] max_frequency = new char[key_length];
-
 			for(int i=0;i<key_length;i++){
 				character_frequency(map,substrings[i]);
-				max_frequency[key_length-i-1] = get_max_frequency_character(map);
+				max_frequency[i] = get_max_frequency_character(map);
+				System.out.println("max_frequency["+i+"] = "+max_frequency[i]);
 				map.clear();
+				map = initMap();
 			}
 
+			/*
+			decalage = max_frequency[max_frequency.length-1] - 97;
+			if(decalage >= 5) {
+				decalage -= 4;
+			} else {
+				 decalage += 22;
+			}
 
-			for(int i=0;i<max_frequency.length;i++)
-				//System.out.println("max_frequency["+i+"] = "+max_frequency[i]);
-				key += (char) (Math.abs('e'-max_frequency[i])+97);
+			System.out.println("decalage : "+decalage);
+			key += (char) ((decalage%26)+97);
+			System.out.println("key : "+key);
+			*/
+
+			for(int i=0;i<max_frequency.length;i++){
+				decalage = max_frequency[i] - 97;
+				if(decalage >= 5) {
+					decalage -= 4;
+				} else {
+					 decalage += 22;
+				}
+
+				key += (char) ((decalage%26)+97);
+			}
+
+			System.out.println("key = "+key);
+			System.out.println(v.dechiffrer(substrings[key_length],"abc"));
 		}
 
 		else{
@@ -81,15 +102,20 @@ public class Decrypt {
 
 				if(cipher.charAt(0) == 'p'){
 					String key;
+					
+					long startTime = System.currentTimeMillis();
 					character_frequency(map,texteComplet);				
-					System.out.println(map.size());
 					map = sortByValue(map);
-					System.out.println(map.toString());
 					key = generate_key(map);
-					System.out.println(key);
+					
+					long endTime = System.currentTimeMillis();
+
+					System.out.println("Temps de décryptage permutation : "+(endTime-startTime));
 
 					System.out.println(p.dechiffrer(texteComplet,key));
 				}
+				
+				br.close();
 			}
 
 			catch (Exception e) {
@@ -178,21 +204,21 @@ public class Decrypt {
 
 	}
 
-
 	public static void character_frequency(HashMap<Character, Integer> map, String line) {
+		char c = 'a';
+		Integer val;
+			
 		for (int i = 0; i < line.length(); i++) {
-			char c = line.charAt(i);
+			c = line.charAt(i);
 			if (c >= 97 && c <= 122) {
-				Integer val = map.get(new Character(c));
+				val = map.get(new Character(c));
 				map.put(c, new Integer(val + 1));
 			}
 		}
 	}
 
 	public static void print_cipher(HashMap<Character, Integer> map, String texteComplet) {
-		// System.out.println(map.toString());
 		char charMaxFreq = get_max_frequency_character(map);
-		// System.out.println(charMaxFreq);
 		charMaxFreq -= 97;
 		if (charMaxFreq >= 5) {
 			System.out.println(d.dechiffrer(texteComplet, charMaxFreq - 4));
@@ -223,7 +249,7 @@ public class Decrypt {
 			while ((line = br.readLine()) != null) {
 				line = format(line);
 
-				t[key_length] += line;
+				t[key_length] += line+"\n";
 
 				for (int j = 0; j < line.length(); j++) {
 					if (i == key_length)
@@ -234,6 +260,7 @@ public class Decrypt {
 					}
 				}
 			}
+			br.close();
 		}
 
 		catch (Exception e) {
@@ -303,20 +330,11 @@ public class Decrypt {
 		    sortedMap.put(entry.getKey(), entry.getValue());
 		}
 
-		/*
-		//classic iterator example
-		for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
-		    Map.Entry<String, Integer> entry = it.next();
-		    sortedMap.put(entry.getKey(), entry.getValue());
-		}*/
-
-
 		return sortedMap;
-		
 	}
 
 	public static String generate_key(HashMap<Character,Integer> map){
-		List keys = new ArrayList(map.keySet());
+		ArrayList<Character> keys = new ArrayList<Character>(map.keySet());
 		String key = "";
 		int[] indexes = {24,10,14,15,25,7,11,8,23,3,2,17,13,21,18,12,6,20,22,19,16,9,1,4,5,0};
 
