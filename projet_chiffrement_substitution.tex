@@ -89,7 +89,7 @@ Chacune des classes \texttt{Decalage, Vigenere, Permutation} comportent 4 métho
 \subsection{Decalage.java}
 \vspace{1\baselineskip}
 
-Dans la méthode \texttt{public char chiffrer(char c, int key)} on utilise la clé \textt{key} pour décaler le caractère. \\
+Dans la méthode \texttt{public char chiffrer(char c, int key)} on utilise la clé \texttt{key} pour décaler le caractère. \\
 On commence par retrancher 97 (qui correspond au code ASCII de la lettre minuscule \textit{a}). \\
 Ensuiste on ajoute la valeur du décalage, puis on calcule le modulo 26 du nombre obtenu. \\
 On finit par ajouter 97 pour obtenir le caractère chiffré. \\
@@ -124,7 +124,7 @@ Dans la méthode \texttt{char chiffrer(char c, String key)} on renvoie le caract
 Cette chaînes de caractère représente la permutation utilisée pour chiffrer les textes clairs. \\
 \vspace{1\baselineskip}
 
-Dans la méthode \texttt{char dechiffrer(char c, String key)} on renvoie le caractère obtenu en ajoutant 97 à l'indice auquel se trouve le caractère \texttt{c} dans la chaîne \textt{key}. \\
+Dans la méthode \texttt{char dechiffrer(char c, String key)} on renvoie le caractère obtenu en ajoutant 97 à l'indice auquel se trouve le caractère \texttt{c} dans la chaîne \texttt{key}. \\
 \vspace{1\baselineskip}
 
 Les méthodes \texttt{String chiffrer/dechiffrer(String s, String key)} applique les 2 méthodes précédentes à chaque caractères de la chaîne \texttt{s} passée en argument. \\
@@ -139,12 +139,12 @@ Ces applications ouvrent en lecture le fichier passé en argument. Puis elles ap
 \subsection{Decrypt.java}
 \vspace{1\baselineskip}
 
-\subsection{Chiffrement de César}
+\subsubsection{Chiffrement de César}
 \vspace{1\baselineskip}
 
 \vspace{2\baselineskip}
 
-\subsection{Chiffrement de Vigenère}
+\subsubsection{Chiffrement de Vigenère}
 \vspace{1\baselineskip}
 
 Dans cette partie, on suppose la longueur $n$ du mot-clé utilisé pour le chiffrement connue. \\
@@ -160,7 +160,7 @@ Toutes les sous-chaînes sont stockées dans un tableau. \\
 \end{enumerate}
 \vspace{2\baselineskip}
 
-\subsection{Chiffrement par permutation}
+\subsubsection{Chiffrement par permutation}
 \vspace{1\baselineskip}
 
 On effectue une analyse statistique des caractères du texte chiffré. \\
